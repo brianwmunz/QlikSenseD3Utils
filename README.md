@@ -13,7 +13,7 @@ Installation & Use
 To get access to the function in this library, simply include the senseD3utils library in your require script in your new extension.  Please see the [Zoomable Sunburst extension](https://github.com/brianwmunz/QlikSenseD3ZoomableSunbust) if you're unsure.  
 For example:
 ```
-define(["jquery", "text!./style.css", "./d3.v3.min", "**./senseD3utils**"], function($, cssContent) {
+define(["jquery", "text!./style.css", "./d3.v3.min", "./senseD3utils"], function($, cssContent) {
 
 ```
 Once it's included, you can call the D3 functions by first using the library namespace, **senseD3**, and calling the function.  So for example, to use the computeTextRotation function, you call it this way:
