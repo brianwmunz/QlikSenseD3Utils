@@ -1,9 +1,11 @@
 QlikSenseD3Utils
 ================
 This is a library intended to help Qlik Sense Extension developers in the creation of D3 visualizations.  Right now, there are only a few functions, mostly related to the creation of visualizations based on Tree Data. That being said...
+
 **PLEASE CONTRIBUTE**
+
 The idea here is that as we work on D3 visualizations in Sense we could add them to this library.  D3 has several different ways of dealing with data, but as you cover one of these ways, it opens up the possibilities for many visualizations built on this data schema.
-For example, the createFamily function in this library takes Qlik Sense data and formats it in a way similar to the flare.json data set that you see used in many D3 visualizations.  If a developer is wanting to build a viz which uses flare in the example, it should be fairly easy to get up and running by using this createFamily function.
+For example, the createFamily function in this library takes Qlik Sense data and formats it in a way similar to the flare.json data set that you see used in many D3 visualizations.  If a developer is wanting to build a viz which uses flare, it should be fairly easy to get up and running by using this createFamily function.
 
 *********************************
 Installation & Use
@@ -14,11 +16,11 @@ For example:
 define(["jquery", "text!./style.css", "./d3.v3.min", "**./senseD3utils**"], function($, cssContent) {
 
 ```
-Once it's included, you can call the D3 functions by first using the library namespace, senseD3, and calling the function.  So for example, to use the computeTextRotation function, you call it this way:
+Once it's included, you can call the D3 functions by first using the library namespace, **senseD3**, and calling the function.  So for example, to use the computeTextRotation function, you call it this way:
 ```
 senseD3.computeTextRotation(e, x);
 ```
-and createFamily would be called this way:
+and createFamily would be called this way, with the qMatrix data being passed in:
 ```
 senseD3.createFamily(qData.qMatrix);
 ```
@@ -38,7 +40,7 @@ The layout that's created by createFamily is based on the commonly used data set
 
 [http://bl.ocks.org/mbostock/raw/4063550/flare.json](http://bl.ocks.org/mbostock/raw/4063550/flare.json)
 
-In order for this to work properly, the data for the extension needs to be formatted in a child/parent/value format.  This way, the function knows all of the associations between the data and can create a tree from it.  Please see the [Sunburst extension example](https://github.com/brianwmunz/QlikSenseD3ZoomableSunbust).
+In order for this to work properly, the data for the extension needs to be formatted in a child/parent/value format.  This way, the function knows all of the associations between the data and can create a tree from it.  Again, please see the [Sunburst extension example](https://github.com/brianwmunz/QlikSenseD3ZoomableSunbust).
 
 In your extension script, you need to first create a JSON object to hold the data tree:
 ```
