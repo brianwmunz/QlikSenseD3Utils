@@ -64,3 +64,9 @@ this is another commonly seen function for animation that computes the arcs.  d 
 ```
 senseD3.arcTween(d, x, y, radius, arc)
 ```
+
+**findMaxDepth**
+this is a commonly used function to find the maximum depth of nodes in the current dataset view. just pass in your nodes object (e.g. from a collapsible tree layout) and it will return the maximun depth of the graph that a user has revealed. this can be useful for scaling your visualization to the size of the page regardless of how many nodes are visible or collapsed.
+```
+senseD3.findMaxDepth(nodes)
+```
