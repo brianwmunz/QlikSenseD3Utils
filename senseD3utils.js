@@ -69,5 +69,13 @@ var senseD3 = {
 
         return getChildren('-');
 
+    },
+    // Find the maximum depth of nodes in the current dataset
+    findMaxDepth: function(dataSet) {
+        var maxDepth = 0;
+        dataSet.forEach(function(d) {
+            maxDepth = (d.depth > maxDepth ? d.depth : maxDepth);
+        });
+        return maxDepth;
     }
 };
