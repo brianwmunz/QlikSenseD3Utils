@@ -70,12 +70,13 @@ var senseD3 = {
         return getChildren('-');
 
     },
-    // Find the maximum depth of nodes in the current dataset
-    findMaxDepth: function(dataSet) {
-        var maxDepth = 0;
+    // Traverse the dataset to find the maximum value of a 
+    // specified attribute from all of the nodes in the passed dataset
+    findMaxValue: function(attr, dataSet) {
+        var maxValue = 0;
         dataSet.forEach(function(d) {
-            maxDepth = (d.depth > maxDepth ? d.depth : maxDepth);
+            maxValue = (d[attr] > maxValue ? d[attr] : maxValue);
         });
-        return maxDepth;
+        return maxValue;
     }
 };
