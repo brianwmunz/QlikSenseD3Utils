@@ -54,18 +54,21 @@ myJSON.children = senseD3.createFamily(qMatrix);
 Now you have well formatted data that can be loaded into a d3 viz.  For example, the sunburst chart was easy to get running once the data was converted since most of the code that builds the viz itself doesn't need to be modified.
 
 **computeTextRotation**
+
 this is a function used in many d3 visualizations to compute the proper rotation of the text on the viz.  The required parameters for the function should be similar to what is used in the vizualization normally.  The first parameter is the d3 object itself and the second is a variable that is typically represented as "x" in most d3 viz.  It's essentially a range and scale of the viz:
 ```
 senseD3.computeTextRotation(e,x);
 ```
 
 **arcTween**
+
 this is another commonly seen function for animation that computes the arcs.  d is once again the parameter for the object itself.  It would be easiest to learn about the other parameters by looking at the sunburst extension.
 ```
 senseD3.arcTween(d, x, y, radius, arc)
 ```
 
 **findMaxValue**
+
     // Traverse the dataset to find the maximum value of a 
     // specified attribute from all of the nodes in the passed dataset
 
