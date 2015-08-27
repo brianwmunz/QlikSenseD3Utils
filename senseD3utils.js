@@ -53,7 +53,7 @@ var senseD3 = {
                         exists = true;
                     }
                 });
-                if(!exists){
+                if((!exists) && (d[i+1].qText != "-")){
                     var newDataSet = {
                         name: d[i+1].qText,
                         parent: parentVal,
