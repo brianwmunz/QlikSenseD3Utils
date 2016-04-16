@@ -31,10 +31,13 @@ var senseD3 = {
         //format Sense data into a more easily consumable format and build the parent/child arrays
 
         var happyData = [];
-        for(s in dataSet){
-            var d = dataSet[s];
-            for(i=0; i<numDims-1; i++){
 
+        //loop through each array in the dataset
+        for(s=0; s<dataSet.length; s++){
+            var d = dataSet[s];
+            //for each dim check if the record is a child or a parent and add to corresponding array
+            for(i=0; i<numDims-1; i++){
+// console.log(d[i]);
                 if (parentsA.indexOf(d[i].qText) === -1) {
                     parentsA.push(d[i].qText);
                 }
@@ -53,14 +56,19 @@ var senseD3 = {
                         exists = true;
                     }
                 });
+// console.log(d[numDims].qState);
+                //get attributes associated to each leaf of tree - add a color attribute if a dim exists that was not included in numDims
                 if(!exists){
                     var newDataSet = {
                         name: d[i+1].qText,
                         parent: parentVal,
-                        size: d[numDims].qNum,
+                        size: (d[numDims+1] || d[numDims]).qNum,
+                        color: d[numDims].qState="O" ? d[numDims].qNum : 1,
                         leaf: (i+1) === (numDims-1) ? true : false
                     };
                     happyData.push(newDataSet);
+                } else {
+console.log('this',d);
                 }
             }
         }
@@ -75,24 +83,27 @@ var senseD3 = {
                 happyData.push(noParent);
             }
         });
-
+// console.log(happyData);
         //crawl through the data to create the family tree in JSON
         function getChildren(name) {
             return happyData.filter(function(d) {
                     return d.parent === name;
                 })
                 .map(function(d) {
+// console.log(d);
                     var mapping;
                     if(d.leaf) {
                         mapping = {
                             name: d.name,
-                            size: d.size
+                            size: d.size,
+                            color: d.color
                         };
                     }
                     else {
                         mapping = {
                             name: d.name,
                             size: d.size,
+                            // color: d.color,
                             children: getChildren(d.name)
                         };
                     }
