@@ -40,6 +40,7 @@ The layout that's created by createFamily is based on the commonly used data set
 
 [http://bl.ocks.org/mbostock/raw/4063550/flare.json](http://bl.ocks.org/mbostock/raw/4063550/flare.json)
 
+
 **Parameters**
 dataset: qMatrix - actual data values in qMatrix format
 numDims: integer - number of dimensions used to create the chart (use findNumOfDims(layout) if you don't want to hard code the number of dimensions)
@@ -95,6 +96,8 @@ senseD3.findMaxDepth(nodes)
 
 ## createJSONObj
 This function creates your standard key-value pair for all of your dimensions/measures.  All keys will use the text label of the field.
+
+
 **Parameters**
 layout: layout - this takes the layout variable from your extension
 numOfDims: integer - this is an integer value that specifies the number of dimensions
@@ -110,6 +113,8 @@ An array of objects for each row in your hypercube.  Each object contains the di
 
 ## findNumOfDims
 This function is used to find how many dimensions are contained in your HyperCube.  This is useful for passing the numDims parameter for other functions.
+
+
 **Parameters**
 layout: layout - this takes the layout variable from your extension
 
