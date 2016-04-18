@@ -40,14 +40,16 @@ The layout that's created by createFamily is based on the commonly used data set
 
 [http://bl.ocks.org/mbostock/raw/4063550/flare.json](http://bl.ocks.org/mbostock/raw/4063550/flare.json)
 
-
 **Parameters**
+
 dataset: qMatrix - actual data values in qMatrix format
+
 numDims: integer - number of dimensions used to create the chart (use findNumOfDims(layout) if you don't want to hard code the number of dimensions)
+
 familytype: string - nested hierarchy (nested) or over multiple dimensions (multiDim)
+
 customColor: boolean - boolean based on whether custom colors are included
 
-There are two types of 
 
 In order for this to work properly, the data for the extension needs to be formatted in either a child/parent/value format, or using a single parent-child relationship (more on this below).  This way, the function knows all of the associations between the data and can create a tree from it.  Again, please see the [Sunburst extension example](https://github.com/brianwmunz/QlikSenseD3ZoomableSunbust).
 
@@ -97,16 +99,19 @@ senseD3.findMaxDepth(nodes)
 ## createJSONObj
 This function creates your standard key-value pair for all of your dimensions/measures.  All keys will use the text label of the field.
 
-
 **Parameters**
+
 layout: layout - this takes the layout variable from your extension
+
 numOfDims: integer - this is an integer value that specifies the number of dimensions
+
 
 ```
 senseD3.createJSONObj(layout, 3)
 ```
 
 **Return value**
+
 An array of objects for each row in your hypercube.  Each object contains the dimensions and measures of that particular row.  Because labels are used to name the keys in the object, there will often times be spaces in the names and you will have to use d["Field Name"] to reference that dimension or measure.
 
 
@@ -114,13 +119,15 @@ An array of objects for each row in your hypercube.  Each object contains the di
 ## findNumOfDims
 This function is used to find how many dimensions are contained in your HyperCube.  This is useful for passing the numDims parameter for other functions.
 
-
 **Parameters**
+
 layout: layout - this takes the layout variable from your extension
+
 
 ```
 senseD3.findNumOfDims(layout)
 ```
 
 **Return Value**
+
 Single integer specifying the length of the dimension object
