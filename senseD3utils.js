@@ -19,17 +19,29 @@ var senseD3 = {
     },
   //create family is to be used for creating a tree type data structure which can be used in most D3 tree vizualizations.  
   //See more info about the tree layout here:  https://github.com/mbostock/d3/wiki/Tree-Layout
-    createFamily: function(dataSet,numDims) {
+  // takes parameters for:
+    // dataset :        qMatrix -   actual data values 
+    // numDims :        int     -   number of dimensions used to create the chart
+    // familytype :     string  -   nested (nested) or over multiple dimensions (multiDim)
+    // customColor :    boolean -   boolean if custom colors are included
+    createFamily: function(dataSet,numDims,familytype,customColor) {
         var numDims;
-        if(arguments.length==1) {
-            numDims = 2;
-        }
+        if (arguments.length==1) {
+            familytype = "multiDim",
+            numDims = 2,
+            customColor=false;
+        } else if(arguments.length==2) {
+            familytype = "multiDim",
+            customColor=false;
+        } else if (arguments.length==3) {
+            customColor=false;
+        };
         
         //create arrays of parents and children.  this is so we can determine if there's any nodes without parents.  these would be the top parents 
         var parentsA = [];
         var kidsA = [];
-        //format Sense data into a more easily consumable format and build the parent/child arrays
 
+        //create array for data that will be added on each loop
         var happyData = [];
 
         //loop through each array in the dataset
@@ -37,60 +49,57 @@ var senseD3 = {
             var d = dataSet[s];
             //for each dim check if the record is a child or a parent and add to corresponding array
             for(i=0; i<numDims-1; i++){
-// console.log(d[i]);
-                if (parentsA.indexOf(d[i].qText) === -1) {
-                    parentsA.push(d[i].qText);
+                //set color dimension based on if color selection has been made
+                var color = customColor ? d[numDims].qAttrExps.qValues[0].qText : d[i].qElemNumber;
+                //check if the parent already exists, if it's new add the parent name and color to the parent array
+                if (parentsA.map(function (e) {return e.name}).indexOf(d[i].qText) === -1) {
+                    var parentIter = {
+                        name: d[i].qText,
+                        color: color
+                    };
+                    parentsA.push(parentIter);
                 }
+                //if there is no text for the dimension you are evaluating, give it a value of root, otherwise use the text value
                 var parentVal = "";
                 if ((!(d[i].qText)) || (d[i].qText == "-") || (d[i].qText == "") || (d[i].qText) == " ") {
                     parentVal = "[root]";
                 } else {
                     parentVal = d[i].qText;
                 }
+                //if the kid doesn't exist, then add it to the array
                 if (kidsA.indexOf(d[i+1].qText) === -1) {
                     kidsA.push(d[i+1].qText);
                 }
-                var exists = false;
-                $.each(happyData, function(){
-                    if((this.parent == parentVal) && (this.name == d[i+1].qText)){
-                        exists = true;
-                    }
-                });
-// console.log(d[numDims].qState);
-                //get attributes associated to each leaf of tree - add a color attribute if a dim exists that was not included in numDims
-                if(!exists){
-                    var newDataSet = {
-                        name: d[i+1].qText,
-                        parent: parentVal,
-                        size: (d[numDims+1] || d[numDims]).qNum,
-                        color: d[numDims].qState="O" ? d[numDims].qNum : 1,
-                        leaf: (i+1) === (numDims-1) ? true : false
-                    };
-                    happyData.push(newDataSet);
-                } else {
-console.log('this',d);
-                }
+                //add each record to the happyData array
+                var newDataSet = {
+                    name: d[i+1].qText,
+                    parent: parentVal,
+                    size: (d[numDims+1] || d[numDims]).qNum,
+                    color: color,
+                    leaf: (i+1) === (numDims-1) ? true : false
+                };
+                happyData.push(newDataSet);
             }
         }
 
-        //loop through the parent and child arrays and find the parents which aren't children.  set those to have a parent of "-", indicating that they're the top parent
-        $.each(parentsA, function() {
-            if (kidsA.indexOf(this.toString()) === -1) {
+        //loop through the parent and child arrays and find the parents which aren't children.  set those to have a parent of "[root]", indicating that they're the top parent
+        
+        $.each(parentsA, function( index ) {
                 var noParent = {
-                    "name": this.toString(),
+                    "name": this.name,
+                    "color": this.color,
                     "parent": "[root]"
                 }
                 happyData.push(noParent);
-            }
         });
-// console.log(happyData);
+
         //crawl through the data to create the family tree in JSON
-        function getChildren(name) {
-            return happyData.filter(function(d) {
+        function getChildren(name, familytype) {
+            if (familytype=="multiDim") {
+                var returnChildren = happyData.filter(function(d) {
                     return d.parent === name;
                 })
                 .map(function(d) {
-// console.log(d);
                     var mapping;
                     if(d.leaf) {
                         mapping = {
@@ -103,19 +112,66 @@ console.log('this',d);
                         mapping = {
                             name: d.name,
                             size: d.size,
-                            // color: d.color,
-                            children: getChildren(d.name)
+                            color: d.color,
+                            children: getChildren(d.name, familytype)
                         };
                     }
                     
                     return mapping;
                 });
+            } else{
+                var returnChildren = happyData.filter(function(d) {
+                    return d.parent === name;
+                })
+                .map(function(d) {
+                    return {
+                        name: d.name,
+                        size: d.size,
+                        color: d.color,
+                        children: getChildren(d.name, familytype)
+                    };
+                });
+            };
+
+            return returnChildren;
         }
 
-        var JSONtree = getChildren('[root]');
+        var JSONtree = getChildren('[root]', familytype);
         return JSONtree;
 
     },
+    createJSONObj: function (layout, numOfDims) {
+
+        //store raw dimensions and create variable for final labels
+        var rawDimLabels = layout.qHyperCube.qDimensionInfo,
+            rawMeasLabels = layout.qHyperCube.qMeasureInfo,
+            datapts     = layout.qHyperCube.qDataPages[0].qMatrix
+            labels = [];
+
+        //loop through dimension and measure labels and add to array
+        for (var i = 0; i <= rawDimLabels.length - 1; i++) {
+                labels.push(rawDimLabels[i].qFallbackTitle);
+        };
+        for (var i = 0; i <= rawMeasLabels.length - 1; i++) {
+                labels.push(rawMeasLabels[i].qFallbackTitle);
+        };
+        var data = [];
+
+        for (var index = datapts.length - 1; index >= 0; index--) {
+            var tempDataArr ={};
+            for (var j = labels.length - 1; j >= 0; j--) {
+                if (j<=numOfDims) {
+                    tempDataArr[labels[j]] = datapts[index][j].qText;
+                } else{
+                    tempDataArr[labels[j]] = datapts[index][j].qNum;
+                };
+            };
+            data.push(tempDataArr);
+        };
+
+        return data;
+    },
+
     // Traverse the dataset to find the maximum value of a 
     // specified attribute from all of the nodes in the passed dataset
     findMaxValue: function(attr, dataSet) {
@@ -124,5 +180,9 @@ console.log('this',d);
             maxValue = (d[attr] > maxValue ? d[attr] : maxValue);
         });
         return maxValue;
+    },
+    findNumOfDims: function (layout) {
+        //return the number of dimensions
+        return layout.qHyperCube.qDimensionInfo.length;
     }
 };
