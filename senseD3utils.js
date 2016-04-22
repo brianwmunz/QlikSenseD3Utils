@@ -85,12 +85,14 @@ var senseD3 = {
         //loop through the parent and child arrays and find the parents which aren't children.  set those to have a parent of "[root]", indicating that they're the top parent
         
         $.each(parentsA, function( index ) {
+            if (((kidsA.indexOf(this.name.toString()) === -1) && familytype == "nested") || familytype == "multiDim") {
                 var noParent = {
                     "name": this.name,
                     "color": this.color,
                     "parent": "[root]"
                 }
                 happyData.push(noParent);
+            }
         });
 
         //crawl through the data to create the family tree in JSON
