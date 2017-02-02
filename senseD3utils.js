@@ -143,6 +143,11 @@ var senseD3 = {
 
     },
     createJSONObj: function (layout, numOfDims) {
+        //check number of arguments passed- if nothing for number of dims, call it yourself
+        if (arguments.length<2) {
+            var numOfDims = findNumOfDims(layout);
+        }
+
 
         //store raw dimensions and create variable for final labels
         var rawDimLabels = layout.qHyperCube.qDimensionInfo,
@@ -162,11 +167,42 @@ var senseD3 = {
         for (var index = datapts.length - 1; index >= 0; index--) {
             var tempDataArr ={};
             for (var j = labels.length - 1; j >= 0; j--) {
-                if (j<=numOfDims) {
-                    tempDataArr[labels[j]] = datapts[index][j].qText;
+                //add id to object
+                tempDataArr.id  = datapts[index][j].qElemNumber;
+
+                if (j<numOfDims) {
+                    //use standard dim number to store data
+                    tempDataArr[ 'dim_' + j ]           = datapts[index][j].qText;
+
+                    //use variable names to store data
+                    tempDataArr[ labels[j] ]                        = datapts[index][j].qText;
                 } else{
-                    tempDataArr[labels[j]] = datapts[index][j].qNum;
+                    //use standard dim number to store data
+                    tempDataArr['meas_' + (j-numOfDims) ]           = datapts[index][j].qNum=="NaN" ? datapts[index][j].qText : datapts[index][j].qNum;
+                    tempDataArr['meas_' + (j-numOfDims) + '_txt']   = datapts[index][j].qText;
+
+                    //use variable names to store data
+                    tempDataArr[labels[j]]                          = datapts[index][j].qNum=="NaN" ? datapts[index][j].qText : datapts[index][j].qNum;
+                    tempDataArr[labels[j]+'_txt']                   = datapts[index][j].qText;
+
+                    //store attribute expressions
+                    if (datapts[index][j].qAttrExps) {
+                        for (var i = 0; i < datapts[index][j].qAttrExps.qValues.length; i++) {
+                            let attrVal;
+                            if (datapts[index][j].qAttrExps.qValues[i].qText) {
+                                // get the value if it is a string
+                                attrVal    = datapts[index][j].qAttrExps.qValues[i].qText;
+                            } else if (datapts[index][j].qAttrExps.qValues[i].qNum){
+                                // pass the number and worry about the conversion of the code on the other side
+                                attrVal    = datapts[index][j].qAttrExps.qValues[i].qNum;
+                            } else {
+                                attrVal    = '';
+                            }
+                            tempDataArr['meas_' + (j-numOfDims)+'_attr_' + i] = attrVal;
+                        }
+                    };
                 };
+
             };
             data.push(tempDataArr);
         };
