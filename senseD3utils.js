@@ -145,7 +145,7 @@ var senseD3 = {
     createJSONObj: function (layout, numOfDims) {
         //check number of arguments passed- if nothing for number of dims, call it yourself
         if (arguments.length<2) {
-            var numOfDims = findNumOfDims(layout);
+            var numOfDims = this.findNumOfDims(layout);
         }
 
 
