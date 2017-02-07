@@ -101,10 +101,10 @@ This function creates your standard key-value pair for all of your dimensions/me
 
 **Parameters**
 
-layout: layout - this takes the layout variable from your extension
-
-numOfDims: integer - this is an integer value that specifies the number of dimensions
-
+| Parameter      | Required?   | Description  |
+| -------------  | ----------- | ------------------------------- |
+| layout         | Required    | This takes the layout variable from your extension |
+| numOfDims      | Optional    | This is an integer value that specifies the number of dimensions. findNumOfDims library function is used if not specified |
 
 ```
 senseD3.createJSONObj(layout, 3)
@@ -112,8 +112,11 @@ senseD3.createJSONObj(layout, 3)
 
 **Return value**
 
-An array of objects for each row in your hypercube.  Each object contains the dimensions and measures of that particular row.  Because labels are used to name the keys in the object, there will often times be spaces in the names and you will have to use d["Field Name"] to reference that dimension or measure.
+An array of objects for each row in your hypercube.  Each object contains the dimensions and measures of that particular row.  
 
+There are two types of fields in each object of the return array.  The first set of field names has key value pairs of hypercube label and associated value.  Because labels are used to name the keys in the object, there will often times be spaces in the names and you will have to use d["Field Name"] to reference that dimension or measure. These fields should be used sparingly since the user can alter the label names. 
+
+The second set of fields returns fields in the format dim_X_id, dim_X, meas_X, meas_X_txt, and meas_X_attr_Y to give standard formatted field names that can be used regardless of the naming of each dimension or measure.
 
 
 ## findNumOfDims
