@@ -164,25 +164,26 @@ var senseD3 = {
         };
         var data = [];
 
-        for (var index = datapts.length - 1; index >= 0; index--) {
+        for (var index = 0; index <= datapts.length - 1; index++) {
             var tempDataArr ={};
-            for (var j = labels.length - 1; j >= 0; j--) {
-                //add id to object
-                tempDataArr.id  = datapts[index][j].qElemNumber;
-
+            for (var j = 0; j <= labels.length - 1; j++) {
+                // check if the iterator is less than the total number of the dimensions
                 if (j<numOfDims) {
+
                     //use standard dim number to store data
                     tempDataArr[ 'dim_' + j ]           = datapts[index][j].qText;
+                    //add id to object
+                    tempDataArr[ 'dim_' + j + '_id' ]           = datapts[index][j].qElemNumber;
 
                     //use variable names to store data
                     tempDataArr[ labels[j] ]                        = datapts[index][j].qText;
                 } else{
                     //use standard dim number to store data
-                    tempDataArr['meas_' + (j-numOfDims) ]           = datapts[index][j].qNum=="NaN" ? datapts[index][j].qText : datapts[index][j].qNum;
+                    tempDataArr['meas_' + (j-numOfDims) ]           = isNaN(datapts[index][j].qNum) ? datapts[index][j].qText : datapts[index][j].qNum;
                     tempDataArr['meas_' + (j-numOfDims) + '_txt']   = datapts[index][j].qText;
 
                     //use variable names to store data
-                    tempDataArr[labels[j]]                          = datapts[index][j].qNum=="NaN" ? datapts[index][j].qText : datapts[index][j].qNum;
+                    tempDataArr[labels[j]]                          = isNaN(datapts[index][j].qNum) ? datapts[index][j].qText : datapts[index][j].qNum;
                     tempDataArr[labels[j]+'_txt']                   = datapts[index][j].qText;
 
                     //store attribute expressions
@@ -204,6 +205,7 @@ var senseD3 = {
                 };
 
             };
+// console.log('tempDataArr',tempDataArr);
             data.push(tempDataArr);
         };
 
